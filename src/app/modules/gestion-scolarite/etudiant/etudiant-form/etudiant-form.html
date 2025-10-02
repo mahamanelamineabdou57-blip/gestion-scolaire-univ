@@ -1,0 +1,180 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>{{ isEditMode ? ''+getLink()+' d\'un étudiant' : 'Nouvel étudiant' }}</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a [routerLink]="['/scolarite/etudiant']">Étudiants</a></li>
+        <li class="breadcrumb-item active">{{ getLink() }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+
+          <!-- Header -->
+          <div class="card-header uas-bg-color d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="m-0">
+                Informations de l’étudiant
+                <span *ngIf="isEditMode" class="badge ms-2" [ngClass]="getBadgeClasse()">
+                  {{ getBadgeTexte() }}
+                </span>
+              </h3>
+            </div>
+            <div *ngIf="hasInterface('Scolarite','ecriture')" class="form-check form-switch">
+            <div *ngIf="isEditMode" class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" (change)="toggleReadOnly()" [checked]="!readOnly">
+              <label class="form-check-label ms-2">Activer la modification</label>
+            </div>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="card-body">
+            <form #form="ngForm" (ngSubmit)="onSubmit()">
+
+
+              <!-- Tabs -->
+              <ul
+                class="nav nav-tabs nav-tabs-bordered d-flex mt-3"
+                id="borderedTabJustified"
+                role="tablist"
+              >
+                <li class="nav-item flex-fill" role="presentation">
+                  <button
+                    class="nav-link w-100 active"
+                    id="informations"
+                    data-bs-toggle="tab"
+                    data-bs-target="#tab-info"
+                    type="button"
+                    role="tab"
+                  >
+                    Informations générales
+                  </button>
+                </li>
+                <li class="nav-item flex-fill" role="presentation">
+                  <button
+                    class="nav-link w-100"
+                    id="contact"
+                    data-bs-toggle="tab"
+                    data-bs-target="#tab-contact"
+                    type="button"
+                    role="tab"
+                  >
+                    Personne à contacter
+                  </button>
+                </li>
+              </ul>
+
+              <div class="tab-content pt-2">
+                <!-- Informations générales -->
+                <div class="tab-pane fade show active" id="tab-info">
+                  <div class="col-sm-12 mt-3">
+
+                    <!-- Identité -->
+                    <div class="form-floating my-3">
+                      <input type="text" class="form-control" name="matricule" [(ngModel)]="etudiant.matricule" placeholder="Matricule" required [disabled]="readOnly" />
+                      <label>Matricule</label>
+                    </div>
+
+                    <div class="form-floating my-3">
+                      <input type="text" class="form-control" name="nom" [(ngModel)]="etudiant.nom" placeholder="Nom" required [disabled]="readOnly" />
+                      <label>Nom</label>
+                    </div>
+
+                    <div class="form-floating my-3">
+                      <input type="text" class="form-control" name="prenom" [(ngModel)]="etudiant.prenom" placeholder="Prénom" required [disabled]="readOnly" />
+                      <label>Prénom</label>
+                    </div>
+
+                    <div class="form-floating my-3">
+                      <input type="date" class="form-control" name="dateNaissance" [(ngModel)]="etudiant.dateNaissance" required [disabled]="readOnly" />
+                      <label>Date de naissance</label>
+                    </div>
+
+                    <div class="form-floating my-3">
+                      <input type="text" class="form-control" name="lieuNaissance" [(ngModel)]="etudiant.lieuNaissance" placeholder="Lieu de naissance" [disabled]="readOnly" />
+                      <label>Lieu de naissance</label>
+                    </div>
+
+                    <!-- Contact étudiant -->
+                    <div class="form-floating my-3">
+                      <input type="email" class="form-control" name="email" [(ngModel)]="etudiant.email" placeholder="Email" [disabled]="readOnly" />
+                      <label>Email</label>
+                    </div>
+
+                    <div class="form-floating my-3">
+                      <input type="text" class="form-control" name="telephone" [(ngModel)]="etudiant.telephone" placeholder="Téléphone" [disabled]="readOnly" />
+                      <label>Téléphone</label>
+                    </div>
+
+                    <div class="form-floating my-3">
+                      <input type="text" class="form-control" name="adresse" [(ngModel)]="etudiant.adresse" placeholder="Adresse" [disabled]="readOnly" />
+                      <label>Adresse</label>
+                    </div>
+
+                    <!-- Photo -->
+                    <div class="mb-3 text-center">
+                      <div class="mt-3">
+                      <input
+                        class="form-control"
+                        type="file"
+                        (change)="onFileChange($event)"
+                        [disabled]="readOnly"
+                      />
+                      @if (photoPreview) {
+                        <div class="mt-2">
+                          <img [src]="photoPreview" alt="Logo" width="150" />
+                        </div>
+                      }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Logo -->
+                <div class="tab-pane fade" id="tab-contact">
+
+                  <!-- Personne à contacter -->
+                  <h5 class="mt-4">Personne à contacter</h5>
+                  <div class="form-floating my-3">
+                    <input type="text" class="form-control" name="contactNom" [(ngModel)]="etudiant.contact_nom" placeholder="Nom" [disabled]="readOnly" />
+                    <label>Nom</label>
+                  </div>
+                  <div class="form-floating my-3">
+                    <input type="text" class="form-control" name="contactPrenom" [(ngModel)]="etudiant.contact_prenom" placeholder="Prénom" [disabled]="readOnly" />
+                    <label>Prénom</label>
+                  </div>
+                  <div class="form-floating my-3">
+                    <input type="text" class="form-control" name="contactTelephone" [(ngModel)]="etudiant.contact_telephone" placeholder="Téléphone" [disabled]="readOnly" />
+                    <label>Téléphone</label>
+                  </div>
+                  <div class="form-floating my-3">
+                    <input type="email" class="form-control" name="contactEmail" [(ngModel)]="etudiant.contact_email" placeholder="Email" [disabled]="readOnly" />
+                    <label>Email</label>
+                  </div>
+                  <div class="form-floating my-3">
+                    <input type="text" class="form-control" name="contactLien" [(ngModel)]="etudiant.contact_lien" placeholder="Lien de parenté" [disabled]="readOnly" />
+                    <label>Lien de parenté</label>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="row m-3">
+                <button *ngIf="hasInterface('Scolarite','ecriture')" type="submit" class="btn uas-btn-color-alt col me-2" [disabled]="readOnly">{{ isEditMode ? 'Modifier' : 'Enregistrer' }}</button>
+                <button type="button" class="btn uas-btn-color col" (click)="cancel()">Retour</button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

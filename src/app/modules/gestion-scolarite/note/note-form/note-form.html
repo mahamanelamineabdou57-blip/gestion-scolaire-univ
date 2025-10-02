@@ -1,0 +1,86 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>{{ isEditMode ? 'Modifier une note' : 'Nouvelle note' }}</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a [routerLink]="['/scolarite/etudiant']">Étudiants</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/scolarite/note']">Notes</a></li>
+        <li class="breadcrumb-item active">{{ getLink() }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+
+          <!-- Header -->
+          <div class="card-header uas-bg-color d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="m-0">
+                Informations de la note
+                <span *ngIf="isEditMode" class="badge ms-2" [ngClass]="getBadgeClasse()">
+                  {{ getBadgeTexte() }}
+                </span>
+              </h3>
+            </div>
+            <div *ngIf="hasInterface('Scolarite','ecriture')" class="form-check form-switch">
+            <div *ngIf="isEditMode" class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" (change)="toggleReadOnly()" [checked]="!readOnly">
+              <label class="form-check-label ms-2">Activer la modification</label>
+            </div>
+            </div>
+          </div>
+ 
+          <!-- Body -->
+          <div class="card-body">
+            <form #form="ngForm" (ngSubmit)="onSubmit()">
+
+              <!-- Étudiant -->
+              <div class="form-floating my-3">
+                <select class="form-select" name="inscriptionId" [(ngModel)]="note.inscriptionId" required [disabled]="readOnly" (change)="onInscriptionChange()">
+                  <option value="" disabled>Sélectionnez l'étudiant</option>
+                  <option *ngFor="let insc of inscriptions" [value]="insc.id">
+                    {{ insc.etudiantNom }} - {{ insc.formationNom }} ({{ insc.anneeNom }}, Semestre {{ insc.semestreCourant }})
+                  </option>
+                </select>
+                <label>Étudiant (Inscription en cours)</label>
+              </div>
+
+              <!-- ECUE -->
+              <div class="form-floating my-3">
+                <select class="form-select" name="ecueId" [(ngModel)]="note.ecueId" required [disabled]="readOnly">
+                  <option value="" disabled>Sélectionnez l'ECUE</option>
+                  <option *ngFor="let e of tempEcues" [value]="e.id">
+                    {{ e.nom }} ({{ e.credits }} crédits)
+                  </option>
+                </select>
+                <label>ECUE</label>
+              </div>
+
+              <div class="mb-3">
+                <label>Note session normale</label>
+                <input type="number" class="form-control"
+                      [(ngModel)]="note.noteSessionNormale" name="noteSessionNormale" required>
+              </div>
+
+              <div class="mb-3">
+                <label>Note de rattrapage</label>
+                <input type="number" class="form-control"
+                      [(ngModel)]="note.noteRattrapage" name="noteRattrapage">
+              </div>
+
+              <div class="row m-3">
+                <button *ngIf="hasInterface('Scolarite','ecriture')" type="submit" class="btn uas-btn-color-alt col me-2" [disabled]="readOnly">{{ isEditMode ? 'Modifier' : 'Enregistrer' }}</button>
+                <button type="button" class="btn uas-btn-color col" (click)="cancel()">Retour</button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,116 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Relevé des notes</h1>
+  </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="card-header uas-bg-color">
+        <h3 class="m-0">Relevé des notes</h3>
+      </div>
+
+      <!-- Filtres -->
+      <div class="card-body row g-3 my-3">
+        <div class="col-md-3">
+          <label>Formation</label>
+          <select class="form-select" [(ngModel)]="selectedFormation" (change)="onFormationChange()">
+            <option value="" disabled selected>Sélectionner</option>
+            <option *ngFor="let f of formations" [ngValue]="f.id">{{ f?.nom }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label>Année scolaire</label>
+          <select class="form-select" [(ngModel)]="selectedAnnee">
+            <option value="" disabled selected>Sélectionner</option>
+            <option *ngFor="let a of annees" [value]="a.id">{{ a?.nom }}</option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label>Semestre</label>
+          <select class="form-select" [(ngModel)]="selectedSemestre" (change)="loadReleve()">
+            <option value="" disabled selected>Sélectionner</option>
+            <option *ngFor="let s of semestres" [value]="s">Semestre {{ s }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau -->
+    <div *ngIf="rows.length > 0" class="card mt-4">
+      <div class="card-header d-flex justify-content-between align-items-center uas-bg-color">
+        <h3 class="m-0">Liste des étudiants</h3>
+        <div>
+          <button class="btn uas-btn-color-light-alt m-3" (click)="exportCSV()">
+            <i class="bi bi-filetype-csv mx-2"></i>Exporter CSV
+          </button>
+          <button class="btn uas-btn-color-light-alt m-3" (click)="exportPDF()">
+            <i class="bi bi-printer mx-2"></i>Exporter PDF
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <input type="text" placeholder="Rechercher..." (input)="updateFilter($event)" class="form-control my-3" />
+
+        <ngx-datatable
+          class="material striped"
+          [rows]="rows"
+          [columnMode]="'force'"
+          [headerHeight]="50"
+          [footerHeight]="50"
+          [rowHeight]="'auto'"
+          [limit]="10">
+
+          <!-- Colonnes existantes -->
+          <ngx-datatable-column name="Étudiant" prop="etudiantNom"></ngx-datatable-column>
+          <ngx-datatable-column name="Matricule" prop="matricule"></ngx-datatable-column>
+          <ngx-datatable-column name="Moyenne" prop="moyenneGenerale"></ngx-datatable-column>
+          <ngx-datatable-column name="Rang" prop="rang"></ngx-datatable-column>
+
+          <!-- Nouvelle colonne Mention -->
+          <ngx-datatable-column name="Mention">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span *ngIf="row.mention==='Très Bien'" class="badge bg-success">
+                {{ row.mention }}
+              </span>
+              <span *ngIf="row.mention==='Bien'" class="badge bg-info">
+                {{ row.mention }}
+              </span>
+              <span *ngIf="row.mention==='Assez Bien'" class="badge bg-secondary">
+                {{ row.mention }}
+              </span>
+              <span *ngIf="row.mention==='Passable'" class="badge bg-warning">
+                {{ row.mention }}
+              </span>
+              <span *ngIf="row.mention==='Insuffisant'" class="badge bg-danger">
+                {{ row.mention }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- Nouvelle colonne Décision -->
+          <ngx-datatable-column name="Décision">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span class="badge" [ngClass]="{'bg-success': row.decision==='Validé', 'bg-danger': row.decision==='Non Validé'}">
+                {{ row.decision }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- Colonne Actions -->
+          <ngx-datatable-column name="Actions" [width]="100" [sortable]="false" [canAutoResize]="false" [draggable]="false">
+
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <button class="btn uas-btn-color-alt btn-sm" (click)="visualiserBulletin(row)">
+                <i class="bi bi-eye"></i>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+
+        </ngx-datatable>
+      </div>
+    </div>
+  </section>
+</main>

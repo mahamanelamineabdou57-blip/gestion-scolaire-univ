@@ -1,0 +1,103 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Bulletin de notes</h1>
+  </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="card-header uas-bg-color text-center">
+        <h3 class="m-0">Bulletin de {{ bulletin?.etudiant?.nom }} {{ bulletin?.etudiant?.prenom }}</h3>
+      </div>
+
+      <div class="card-body" *ngIf="bulletin">
+        <p><strong>Formation :</strong> {{ bulletin.formation.nom }}</p>
+        <p><strong>Année scolaire :</strong> {{ bulletin.annee.nom }}</p>
+        <p><strong>Semestre :</strong> {{ bulletin.semestre }}</p>
+
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>UE</th>
+              <th>ECUE</th>
+              <th>Note</th>
+              <th>Mention</th>
+              <th>Décision UE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ue of bulletin.ues">
+              <td>{{ ue.nom }}</td>
+              <td>
+                <span *ngFor="let e of ue.ecues" class="d-block">{{ e.nom }}</span>
+              </td>
+              <td>
+                <span *ngFor="let e of ue.ecues" class="d-block">{{ e.note }}</span>
+              </td>
+              <td>
+                <span *ngFor="let e of ue.ecues">
+                  <span *ngIf="e.mention==='Très Bien'" class="badge bg-success">
+                    {{ e.mention }}
+                  </span>
+                  <span *ngIf="e.mention==='Bien'" class="badge bg-info">
+                    {{ e.mention }}
+                  </span>
+                  <span *ngIf="e.mention==='Assez Bien'" class="badge bg-secondary">
+                    {{ e.mention }}
+                  </span>
+                  <span *ngIf="e.mention==='Passable'" class="badge bg-warning">
+                    {{ e.mention }}
+                  </span>
+                  <span *ngIf="e.mention==='Insuffisant'" class="badge bg-danger">
+                    {{ e.mention }}
+                  </span><br>
+                </span>
+              </td>
+              <td>
+                <span *ngIf="ue.decision==='Validé'" class="badge bg-success">
+                  {{ ue.decision }}
+                </span>
+                <span *ngIf="ue.decision!=='Validé'" class="badge bg-danger">
+                  {{ ue.decision }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Moyenne générale :</strong>
+          <span *ngIf="showMoy">
+            {{ bulletin.moyenneGenerale }}
+          </span>
+        <p>
+          <strong>Mention générale :</strong>
+          <span *ngIf="showMoy">
+            <span *ngIf="bulletin.mention==='Très Bien'" class="badge bg-success">
+              {{ bulletin.mention }}
+            </span>
+            <span *ngIf="bulletin.mention==='Bien'" class="badge bg-info">
+              {{ bulletin.mention }}
+            </span>
+            <span *ngIf="bulletin.mention==='Assez Bien'" class="badge bg-secondary">
+              {{ bulletin.mention }}
+            </span>
+            <span *ngIf="bulletin.mention==='Passable'" class="badge bg-warning">
+              {{ bulletin.mention }}
+            </span>
+            <span *ngIf="bulletin.mention==='Insuffisant'" class="badge bg-danger">
+              {{ bulletin.mention }}
+            </span>
+          </span>
+        </p>
+        <p>
+          <strong>Décision générale :</strong>
+            <span *ngIf="bulletin.decision==='Validé'" class="badge bg-success">
+              {{ bulletin.decision }}
+            </span>
+            <span *ngIf="bulletin.decision!=='Validé'" class="badge bg-danger">
+              {{ bulletin.decision }}
+            </span>
+        </p>
+      </div>
+    </div>
+  </section>
+</main>

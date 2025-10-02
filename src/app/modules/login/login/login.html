@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+    <title>Pages / Login - NiceAdmin Bootstrap Template</title>
+    <meta content="" name="description" />
+    <meta content="" name="keywords" />
+
+    <!-- Favicons -->
+    <link href="assets/img/logo.png" rel="icon" />
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+      rel="stylesheet"
+    />
+
+    <!-- =======================================================
+  * Template Name: NiceAdmin
+  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+  * Updated: Apr 20 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  </head>
+
+  <body>
+    <!-- <body class="uas-bg-color-light"> -->
+
+    <main>
+      <div class="container">
+        <!-- <div class="container" style="background-image: url('assets/img/logo.png');background-position: center center; background-repeat: no-repeat; background-size: contain;"> -->
+        <section
+          class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4"
+        >
+          <div class="container">
+            <div class="row justify-content-center">
+              <div
+                class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center"
+              >
+                <!-- Logo -->
+
+                <!-- Card -->
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <div class="pt-4 pb-2">
+                      <div class="d-flex justify-content-center py-4">
+                        <img src="assets/img/logo.png" class="w-75" alt="" />
+                      </div>
+                      <h5 class="card-title text-center pb-0 fs-4 uas-color">
+                        Connexion
+                      </h5>
+                      <p class="text-center small">
+                        Entrez votre matricule & mot de passe
+                      </p>
+                    </div>
+
+                    <!-- Formulaire Angular -->
+                    <form
+                      [formGroup]="loginForm"
+                      (ngSubmit)="submit()"
+                      class="row g-3 needs-validation"
+                      novalidate
+                    >
+                      <!-- Matricule -->
+                      <div class="col-12">
+                        <label for="yourMatricule" class="form-label"
+                          >Matricule</label
+                        >
+                        <div class="input-group has-validation">
+                          <i class="input-group-text"
+                            ><i class="bi bi-person-fill"></i
+                          ></i>
+                          <input
+                            type="text"
+                            id="yourMatricule"
+                            formControlName="matricule"
+                            class="form-control"
+                            required
+                          />
+                          <div
+                            *ngIf="
+                              loginForm.get('matricule')?.invalid &&
+                              loginForm.get('matricule')?.touched
+                            "
+                            class="invalid-feedback d-block"
+                          >
+                            Veuillez entrer votre matricule.
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Password -->
+                      <div class="col-12">
+                        <label for="yourPassword" class="form-label"
+                          >Mot de passe</label
+                        >
+                        <div class="input-group has-validation">
+                          <i class="input-group-text"
+                            ><i class="bi bi-lock-fill"></i
+                          ></i>
+                          <input
+                            type="password"
+                            id="yourPassword"
+                            formControlName="password"
+                            class="form-control"
+                            required
+                          />
+                          <div
+                            *ngIf="
+                              loginForm.get('password')?.invalid &&
+                              loginForm.get('password')?.touched
+                            "
+                            class="invalid-feedback d-block"
+                          >
+                            Veuillez entrer votre mot de passe !
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Erreur API -->
+                      <div *ngIf="errorMessage" class="alert alert-danger">
+                        {{ errorMessage }}
+                      </div>
+
+                      <!-- Bouton -->
+                      <div class="col-12">
+                        <button
+                          class="btn uas-btn-color w-100"
+                          type="submit"
+                          [disabled]="loginForm.invalid"
+                        >
+                          Se connecter
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <a
+      href="#"
+      class="back-to-top d-flex align-items-center justify-content-center"
+      ><i class="bi bi-arrow-up-short"></i
+    ></a>
+  </body>
+</html>

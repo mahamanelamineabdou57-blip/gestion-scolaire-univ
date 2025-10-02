@@ -1,0 +1,184 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section dashboard">
+    <div class="row">
+
+      <!-- Sélection année scolaire -->
+      <div class="col-12 mb-3">
+        <label for="annee">Année scolaire:</label>
+        <select id="annee" [(ngModel)]="selectedAnneeScolaire" (change)="onAnneeChange(selectedAnneeScolaire)" class="form-select">
+          <option *ngFor="let annee of anneesDisponibles" [value]="annee">{{ annee }}</option>
+        </select>
+      </div>
+
+      <!-- Cards -->
+      <div class="col-lg-12">
+        <div class="row">
+
+          <!-- Étudiants -->
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">Étudiants</h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-primary text-white">
+                    <i class="bi bi-people"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ currentStats?.totalEtudiants }}</h6>
+                    <span class="text-success small pt-1 fw-bold">
+                      Nouveaux: {{ currentStats?.nouveauxEtudiants }}
+                    </span>
+                    <span class="text-info small pt-1 fw-bold">
+                      Diplômés: {{ currentStats?.etudiantsDiplomes }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formations -->
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card revenue-card">
+              <div class="card-body">
+                <h5 class="card-title">Formations</h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning text-white">
+                    <i class="bi bi-journal"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ currentStats?.totalFormations }}</h6>
+                    <span class="text-muted small pt-2">Inscriptions: {{ currentStats?.totalInscriptions }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paiements -->
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card customers-card">
+              <div class="card-body">
+                <h5 class="card-title">Paiements</h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-success text-white">
+                    <i class="bi bi-currency-dollar"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>{{ currentStats?.totalPaiements }}</h6>
+                    <span class="text-success small pt-1 fw-bold">Payés: {{ currentStats?.totalPaiementsPayes }}</span>
+                    <span class="text-danger small pt-1 fw-bold">Non payés: {{ currentStats?.totalPaiementsNonPayes }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inscriptions par formation -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Inscriptions par formation</h5>
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let f of getStatsForAnnee(currentStats?.etudiantsParFormation)">
+                    {{ f.formation }}: {{ f.count }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top étudiants -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Top étudiants</h5>
+                <ol>
+                  <li *ngFor="let e of getStatsForAnnee(currentStats?.topEtudiants)">
+                    {{ e.etudiant }} - Moyenne: {{ e.moyenne | number:'1.1-2' }}
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Taux de réussite par semestre -->
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Taux de réussite par semestre</h5>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Semestre</th>
+                      <th>Réussite</th>
+                      <th>Échec</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let t of getStatsForAnnee(currentStats?.tauxReussiteParSemestre)">
+                      <td>{{ t.semestre }}</td>
+                      <td>{{ t.reussite }}</td>
+                      <td>{{ t.echec }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div style="max-width: 600px; margin-top: 20px;" *ngIf="barChartData.datasets.length">
+                  <canvas baseChart
+                          [data]="barChartData"
+                          [options]="barChartOptions"
+                          chartType="bar">
+                  </canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Evolution des inscriptions -->
+          <div class="col-12 mt-3">
+            <div class="card">
+              <div class="mx-1 row">
+                <div class="col-4">
+                  <h5 class="card-title">Évolution des inscriptions</h5>
+                  <canvas baseChart
+                          [data]="lineChartData"
+                          [options]="lineChartOptions"
+                          chartType="line">
+                  </canvas>
+                </div>
+                <div class="col-4">
+                  <h5 class="card-title">Répartition des étudiants par sexe</h5>
+                  <canvas baseChart
+                          [data]="pieChartData"
+                          [options]="pieChartOptions"
+                          chartType="pie">
+                  </canvas>
+                </div>
+                <div class="col-4">
+                  <h5 class="card-title">Répartition des étudiants par tranche d'âge</h5>
+                  <canvas baseChart
+                          [data]="agePieChartData"
+                          [options]="pieChartOptions"
+                          chartType="pie">
+                  </canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>

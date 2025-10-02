@@ -1,0 +1,157 @@
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar bg-success-subtle">
+
+  <div class="d-flex align-items-center justify-content-center py-3">
+    <a href="index.html" class="d-flex align-items-center w-100">
+      <img src="assets/img/logo.png" alt="Logo" class="img-fluid w-100">
+    </a>
+  </div>
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <li *ngIf="hasInterface('Dashboard','lecture')" class="nav-item">
+      <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/dashboard') }" class="nav-link collapsed"
+        [routerLink]="['/dashboard']">
+        <i class="bi bi-grid"></i>
+        <span>Tableau de bord</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+    <li *ngIf="hasInterface('Faculte','lecture')" class="nav-item">
+      <a [ngClass]="{ 'nav-link': true, 'collapsed': !currentUrl.includes('/facultes') }" data-bs-target="#facultes-nav"
+        data-bs-toggle="collapse" href="#">
+        <i class="bi bi-journals"></i><span>Gestion des facultés</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="facultes-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/facultes/faculte') }"
+            [routerLink]="['/facultes/faculte']">
+            <i class="bi bi-circle"></i><span>Facultés</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/facultes/departement') }"
+            [routerLink]="['/facultes/departement']">
+            <i class="bi bi-circle"></i><span>Departements</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/facultes/formation') }"
+            [routerLink]="['/facultes/formation']">
+            <i class="bi bi-circle"></i><span>Formations/Diplômes</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/facultes/ue') }"
+            [routerLink]="['/facultes/ue']">
+            <i class="bi bi-circle"></i><span>UE</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/facultes/ecue') }"
+            [routerLink]="['/facultes/ecue']">
+            <i class="bi bi-circle"></i><span>ECUE</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Components Nav -->
+    <li *ngIf="hasInterface('Scolarite','lecture')" class="nav-item">
+      <a [ngClass]="{ 'nav-link': true, 'collapsed': !currentUrl.includes('/scolarite') }" class="nav-link collapsed"
+        data-bs-target="#scolarite-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-person-vcard"></i><span>Gestion de la scolarité</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="scolarite-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/scolarite/etudiant') }"
+            [routerLink]="['/scolarite/etudiant']">
+            <i class="bi bi-circle"></i><span>Etudiants</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/scolarite/inscription') }"
+            [routerLink]="['/scolarite/inscription']">
+            <i class="bi bi-circle"></i><span>Insciptions</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/scolarite/note') }"
+            [routerLink]="['/scolarite/note']">
+            <i class="bi bi-circle"></i><span>Notes</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/scolarite/releve') || currentUrl.includes('/scolarite/bulletin') }"
+            [routerLink]="['/scolarite/releve']">
+            <i class="bi bi-circle"></i><span>Bulletins et relevés</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/scolarite/carte') }"
+            [routerLink]="['/scolarite/carte']">
+            <i class="bi bi-circle"></i><span>Cartes</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Components Nav -->
+    <li *ngIf="hasInterface('Paiement','lecture')" class="nav-item">
+      <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/paiements')}" class="nav-link collapsed"
+        data-bs-target="#paiements-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-people"></i><span>Gestion des paiements</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="paiements-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a [routerLink]="['/paiements/inscription']">
+            <i class="bi bi-circle"></i><span>Frais d'inscription / réinscription</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['/paiements/formation']">
+            <i class="bi bi-circle"></i><span>Frais de formation</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['/paiements']">
+            <i class="bi bi-circle"></i><span>Suivi et historique des paiements</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Components Nav -->
+    <li *ngIf="hasInterface('Configuration','lecture')" class="nav-item">
+      <a [ngClass]="{ 'nav-link': true, 'collapsed': !currentUrl.includes('/configuration') }"
+        data-bs-target="#configuration-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-gear"></i><span>Configuration</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="configuration-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/configuration/universite') }"
+            [routerLink]="['/configuration/universite']">
+            <i class="bi bi-circle"></i><span>Université</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/configuration/utilisateurs') }"
+            [routerLink]="['/configuration/utilisateurs']">
+            <i class="bi bi-circle"></i><span>Utilisateurs</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/configuration/roles') }"
+            [routerLink]="['/configuration/roles']">
+            <i class="bi bi-circle"></i><span>Roles</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/configuration/securite-access') }"
+            [routerLink]="['/configuration/securite-access']">
+            <i class="bi bi-circle"></i><span>Sécurité & Accès</span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="{ 'active uas-bg-color rounded': currentUrl.includes('/configuration/annee-scolaire') }"
+            [routerLink]="['/configuration/annee-scolaire']">
+            <i class="bi bi-circle"></i><span>Année scolaire</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Components Nav -->
+  </ul>
+
+</aside><!-- End Sidebar-->

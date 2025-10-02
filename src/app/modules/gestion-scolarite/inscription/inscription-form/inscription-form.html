@@ -1,0 +1,78 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>{{ isEditMode ? getLink() + ' d\'une inscription' : 'Nouvelle inscription' }}</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a [routerLink]="['/scolarite/inscription']">Inscriptions</a></li>
+        <li class="breadcrumb-item active">{{ getLink() }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header uas-bg-color d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="m-0">
+                Informations de l’inscription
+                <span *ngIf="isEditMode" class="badge ms-2" [ngClass]="readOnly ? 'bg-secondary' : 'bg-success'">
+                  {{ readOnly ? 'Visualisation' : 'Modification active' }}
+                </span>
+              </h3>
+            </div>
+            <div *ngIf="hasInterface('Scolarite','ecriture')" class="form-check form-switch">
+            <div *ngIf="isEditMode" class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" (change)="toggleReadOnly()" [checked]="!readOnly">
+              <label class="form-check-label ms-2">Activer la modification</label>
+            </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <form #form="ngForm" (ngSubmit)="onSubmit()">
+
+              <div class="form-floating my-3">
+                <select class="form-select" name="etudiantId" [(ngModel)]="inscription.etudiant_id" [disabled]="readOnly" required>
+                  <option value="" disabled>Sélectionnez un étudiant</option>
+                  <option *ngFor="let e of etudiants" [value]="e.id">{{ e.nom }} {{ e.prenom }} ({{ e.matricule }})</option>
+                </select>
+                <label>Étudiant</label>
+              </div>
+
+              <div class="form-floating my-3">
+                <select class="form-select" name="formationId" [(ngModel)]="inscription.formation_id" [disabled]="readOnly" required>
+                  <option value="" disabled>Sélectionnez une formation</option>
+                  <option *ngFor="let f of formations" [value]="f.id">{{ f.nom }}</option>
+                </select>
+                <label>Formation</label>
+              </div>
+
+              <div class="form-floating my-3">
+                <select class="form-select" name="anneeScolaireId" [(ngModel)]="inscription.anneeScolaire_id" [disabled]="readOnly" required>
+                  <option value="" disabled>Sélectionnez une année scolaire</option>
+                  <option *ngFor="let a of anneesScolaires" [value]="a.id">{{ a.nom }}</option>
+                </select>
+                <label>Année scolaire</label>
+              </div>
+
+              <div class="form-floating my-3">
+                <select class="form-select" name="semestreCourant" [(ngModel)]="inscription.semestre_courant" [disabled]="readOnly" required>
+                  <option value="" disabled>Sélectionnez un semestre</option>
+                  <option *ngFor="let s of [1, 2, 3, 4, 5, 6]" [value]="s">Semestre {{ s }}</option>
+                </select>
+                <label>Semestre courant</label>
+              </div>
+              <div class="row m-3">
+                <button *ngIf="hasInterface('Scolarite','ecriture')" type="submit" class="btn uas-btn-color-alt col me-2" [disabled]="readOnly">{{ isEditMode ? 'Modifier' : 'Enregistrer' }}</button>
+                <button type="button" class="btn uas-btn-color col" (click)="cancel()">Retour</button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

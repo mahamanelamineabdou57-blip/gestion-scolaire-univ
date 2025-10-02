@@ -1,0 +1,55 @@
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Liste des logs</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a [routerLink]="['/configuration/logs']">Logs</a></li>
+        <li class="breadcrumb-item">Liste des logs</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+
+          <div class="card-header uas-bg-color text-center">
+            <h3 class="m-0"><i class="bi bi-journal-text me-2"></i>Liste des logs</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="d-flex">
+              <div class="justify-content-start col"></div>
+              <div class="justify-content-end">
+                <button class="btn uas-btn-color-light m-3" (click)="exportCSV()">
+                  <i class="bi bi-filetype-csv mx-2"></i>Exporter CSV
+                </button>
+                <button class="btn uas-btn-color-light m-3" (click)="exportPDF()">
+                  <i class="bi bi-file-pdf mx-2"></i>Exporter PDF
+                </button>
+              </div>
+            </div>
+
+            <input type="text" placeholder="Rechercher..." (input)="updateFilter($event)" class="form-control mb-3" />
+
+            <ngx-datatable
+              #datatable
+              class="material striped"
+              [rows]="rows"
+              [columns]="columns"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="'auto'"
+              [limit]="10">
+            </ngx-datatable>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>

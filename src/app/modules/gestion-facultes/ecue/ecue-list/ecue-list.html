@@ -1,0 +1,59 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Liste des ECUE</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active">ECUE</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-header uas-bg-color text-center">
+            <h3 class="m-0"><i class="bi bi-journal-bookmark me-2"></i>Éléments constitutifs (ECUE)</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="d-flex">
+              <div *ngIf="hasInterface('Faculte','ecriture')" class="justify-content-start col">
+                <a class="btn btn-success m-3" [routerLink]="['/facultes/ecue/create']">
+                  <i class="bi bi-plus-circle mx-2"></i> Ajouter
+                </a>
+              </div>
+            </div>
+
+            <input type="text" placeholder="Rechercher..." (input)="updateFilter($event)" class="form-control mb-3" />
+
+            <ng-template #actionsTemplate let-row="row">
+              <div class="row">
+                <button *ngIf="hasInterface('Faculte','lecture')" class="btn uas-btn-color-alt btn-sm me-1 col" (click)="edit(row)">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button *ngIf="hasInterface('Faculte','suppression')" class="btn uas-btn-color btn-sm me-1 col" (click)="delete(row)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </ng-template>
+
+            <ngx-datatable
+              #datatable
+              class="material striped"
+              [rows]="rows"
+              [columns]="columns"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [rowHeight]="'auto'"
+              [limit]="10">
+            </ngx-datatable>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>

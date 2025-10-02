@@ -1,0 +1,112 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>{{ isEditMode ? 'Modifier un paiement' : 'Nouveau paiement' }}</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a  (click)="cancel()">Paiements</a></li>
+        <li class="breadcrumb-item active">{{ getLink() }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+
+          <!-- Header -->
+          <div class="card-header uas-bg-color d-flex justify-content-between align-items-center">
+            <h3 class="m-0">
+              Informations du paiement
+              <span *ngIf="isEditMode" class="badge ms-2" [ngClass]="getBadgeClasse()">
+                {{ getBadgeTexte() }}
+              </span>
+            </h3>
+            <div *ngIf="hasInterface('Paiement','ecriture')" class="form-check form-switch">
+            <div *ngIf="isEditMode" class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" (change)="toggleReadOnly()" [checked]="!readOnly" />
+              <label class="form-check-label ms-2">Activer la modification</label>
+            </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="card-body">
+            <form (ngSubmit)="onSubmit()">
+
+              <div class="form-floating my-3">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="inscriptionId"
+                  [(ngModel)]="paiement.inscriptionId"
+                  name="inscriptionId"
+                  required
+                  [disabled]="readOnly"
+                  placeholder="Inscription ID"
+                />
+                <label for="inscriptionId">Inscription</label>
+              </div>
+
+              <div class="form-floating my-3">
+                <select
+                  class="form-select"
+                  id="type"
+                  [(ngModel)]="paiement.type"
+                  name="type"
+                  [disabled]="readOnly"
+                  required
+                >
+                  <option value="inscription">Inscription</option>
+                  <option value="formation">Formation</option>
+                </select>
+                <label for="type">Type de paiement</label>
+              </div>
+
+              <div class="form-floating my-3">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="montant"
+                  [(ngModel)]="paiement.montant"
+                  name="montant"
+                  required
+                  [disabled]="readOnly"
+                  placeholder="Montant"
+                />
+                <label for="montant">Montant</label>
+              </div>
+
+              <div class="form-floating my-3">
+                <select
+                  class="form-select"
+                  id="statut"
+                  [(ngModel)]="paiement.statut"
+                  name="statut"
+                  [disabled]="readOnly"
+                >
+                  <option value="non payé">Non payé</option>
+                  <option value="partiellement payé">Partiellement payé</option>
+                  <option value="payé">Payé</option>
+                </select>
+                <label for="statut">Statut</label>
+              </div>
+
+              <!-- Buttons -->
+              <div class="row m-3">
+                <button *ngIf="hasInterface('Paiement','ecriture')" type="submit" class="btn uas-btn-color-alt col me-2" [disabled]="readOnly">
+                  <i class="bi bi-save mx-2"></i> {{ isEditMode ? 'Modifier' : 'Enregistrer' }}
+                </button>
+                <button type="button" class="btn uas-btn-color col" (click)="cancel()">
+                  <i class="bi bi-arrow-left-circle mx-2"></i> Retour
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,72 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>{{ isEditMode ? 'Modifier une UE' : 'Nouvelle UE' }}</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a [routerLink]="['/facultes/faculte']">Facultés</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/facultes/ue']">Unités d'enseignement (UE)</a></li>
+        <li class="breadcrumb-item active">{{ getLink() }}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+
+          <div class="card-header uas-bg-color d-flex justify-content-between align-items-center">
+            <div>
+              <h3 class="m-0">
+                Informations de l'UE
+                <span *ngIf="isEditMode" class="badge ms-2" [ngClass]="getBadgeClasse()">
+                  {{ getBadgeTexte() }}
+                </span>
+              </h3>
+            </div>
+            <div *ngIf="hasInterface('Faculte','ecriture')" class="form-check form-switch">
+            <div *ngIf="isEditMode" class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="editSwitch"
+                      (change)="toggleReadOnly()" [checked]="!readOnly" />
+              <label class="form-check-label ms-2" for="editSwitch">Activer la modification</label>
+            </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <form #form="ngForm" (ngSubmit)="onSubmit()">
+
+              <div class="form-floating my-3">
+                <input type="text" class="form-control" id="nom" [(ngModel)]="ue.nom" name="nom" required placeholder="Nom de l'UE" [disabled]="readOnly"/>
+                <label for="nom">Nom de l'UE</label>
+              </div>
+
+              <div class="form-floating my-3">
+                <input type="text" class="form-control" id="code" [(ngModel)]="ue.code" name="code" placeholder="Code UE" [disabled]="readOnly"/>
+                <label for="code">Code UE</label>
+              </div>
+
+              <div class="form-floating my-3">
+                <select class="form-select" [(ngModel)]="ue.formation_id" name="formation" [disabled]="readOnly" required>
+                  <option *ngFor="let f of formations" [value]="f.id">{{ f.nom }}</option>
+                </select>
+                <label for="formation">Formation</label>
+              </div>
+
+              <div class="row m-3">
+                <button *ngIf="hasInterface('Faculte','ecriture')" type="submit" class="btn uas-btn-color-alt col me-2" [disabled]="readOnly">
+                  <i class="bi bi-save mx-2"></i> {{ isEditMode ? 'Modifier' : 'Enregistrer' }}
+                </button>
+                <button type="button" class="btn uas-btn-color col" (click)="cancel()">
+                  <i class="bi bi-arrow-left-circle mx-2"></i> Retour
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
