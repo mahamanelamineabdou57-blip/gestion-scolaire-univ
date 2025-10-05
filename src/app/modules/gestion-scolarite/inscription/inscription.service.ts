@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Inscription } from './inscription.model';
@@ -36,10 +36,30 @@ export class InscriptionService {
     return this.http.patch(`${this.baseUrl}/${id}`, { deletedAt: new Date() });
   }
  
-  // 🔥 Ajout : récupérer les inscriptions par formation et semestre
-  getByFormationAndSemestre(formationId: number, semestre: number): Observable<Inscription[]> {
-    return this.http.get<Inscription[]>(
-      `${this.baseUrl}?formationId=${formationId}&semestre=${semestre}`
-    );
+  // // 🔥 Ajout : récupérer les inscriptions par formation et semestre
+  // getByFormationAndSemestre(formationId: number, semestre: number): Observable<Inscription[]> {
+  //   return this.http.get<Inscription[]>(
+  //     `${this.baseUrl}?formationId=${formationId}&semestre=${semestre}`
+  //   );
+  // }
+  getByFormationAnneeSemestre(formationId: number, anneeId: number, semestre: number): Observable<any[]> {
+    let params = new HttpParams()
+      .set('formationId', formationId.toString())
+      .set('anneeId', anneeId.toString())
+      .set('semestre', semestre.toString());
+
+    return this.http.get<any[]>(`${this.baseUrl}/by-formation-annee-semestre`, { params });
   }
+
+  // Alternative si votre backend n'a pas cette route : utilisez getByFormationAndSemestre et filtrez côté client sur l'année
+  getByFormationAndSemestre(formationId: number, semestre: number): Observable<any[]> {
+    // Implémentez si nécessaire, mais préférez le filtrage serveur
+    let params = new HttpParams()
+      .set('formationId', formationId.toString())
+      .set('semestre', semestre.toString());
+    return this.http.get<any[]>(`${this.baseUrl}/by-formation-semestre`, { params });
+  }
+  getByEtudiantId(etudiantId: number) {
+  return this.http.get<Inscription>(`${this.baseUrl}/etudiant/${etudiantId}`);
+}
 }

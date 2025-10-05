@@ -44,7 +44,7 @@ export class NoteList implements OnInit {
   selectedFormation: number | null = null;
   selectedAnnee: number | null = null;
   selectedSemestre: number | null = null;
-  selectedUE: number | null = null; 
+  selectedUE: number | null = null;
   selectedECUE: number | null = null;
 
   rows: any[] = [];
@@ -105,29 +105,61 @@ export class NoteList implements OnInit {
     this.selectedECUE = null;
     this.rows = [];
   }
-
   // Chargement des étudiants inscrits pour un ECUE donné
   loadEtudiants() {
+    // Vérification des sélections obligatoires
     if (!this.selectedFormation || !this.selectedAnnee || !this.selectedSemestre || !this.selectedECUE) return;
+
     const semestreNumber = +this.selectedSemestre;
-    this.inscriptionService.getByFormationAndSemestre(this.selectedFormation, semestreNumber)
-      .subscribe(inscriptions => {
-        this.noteService.getByECUE(this.selectedECUE!).subscribe(notes => {
-          this.rows = inscriptions.map(i => {
-            const existing = notes.find((n: Note) => n.inscriptionId === i.id);
-            return {
-              inscriptionId: i.id,
-              etudiantNom: `Étudiant #${i.etudiant_id}`,
-              formationNom: `Formation #${i.formation_id}`,
-              noteSessionNormale: existing?.noteSessionNormale ?? null,
-              noteRattrapage: existing?.noteRattrapage ?? null
-            };
+
+    // Récupération des inscriptions pour la formation ET le semestre sélectionné
+    this.inscriptionService
+      .getByFormationAndSemestre(this.selectedFormation, semestreNumber)
+      .subscribe({
+        next: (inscriptions: any[]) => {
+          if (!inscriptions.length) {
+            this.rows = [];
+            this.tempRows = [];
+            return;
+          }
+
+          // 🔥 Filtrer les inscriptions pour ne garder que celles de la formation sélectionnée
+          const filteredInscriptions = inscriptions.filter(
+            i => i.formation?.id === this.selectedFormation
+          );
+
+          // Récupération des notes pour l'ECUE sélectionné
+          this.noteService.getByECUE(this.selectedECUE!).subscribe({
+            next: (notes: any[]) => {
+              this.rows = filteredInscriptions.map(i => {
+                const existingNote = notes.find(n => n.inscriptionId === i.id);
+                return {
+                  inscriptionId: i.id,
+                  etudiantNom: i.etudiant ? `${i.etudiant.nom} ${i.etudiant.prenom}` : 'N/A',
+                  formationNom: i.formation ? i.formation.nom : 'N/A',
+                  noteSessionNormale: existingNote?.noteSessionNormale ?? null,
+                  noteRattrapage: existingNote?.noteRattrapage ?? null
+                };
+              });
+
+              this.tempRows = [...this.rows];
+              this.cdRef.detectChanges();
+            },
+            error: err => {
+              console.error('Erreur lors de la récupération des notes :', err);
+              this.rows = [];
+              this.tempRows = [];
+            }
           });
-          this.tempRows = [...this.rows];
-          this.cdRef.detectChanges();
-        });
+        },
+        error: err => {
+          console.error('Erreur lors de la récupération des inscriptions :', err);
+          this.rows = [];
+          this.tempRows = [];
+        }
       });
   }
+
 
   // Sauvegarde batch
   saveAll() {

@@ -19,6 +19,7 @@ import { NoteServiceMock } from '../../note/note.service.mock';
 import { FormationService } from '../../../gestion-facultes/formation/formation.service';
 import { AnneeScolaireService } from '../../../configuration/annee-scolaire/annee-scolaire.service';
 import { InscriptionService } from '../../inscription/inscription.service';
+import { NoteService } from '../../note/note.service';
 
 @Component({
   selector: 'app-releve',
@@ -49,8 +50,8 @@ export class Releve implements OnInit, AfterViewInit {
     private inscriptionService: InscriptionService,
     private router: Router,
     private cdRef: ChangeDetectorRef,
-    private noteService: NoteServiceMock
-  ) {}
+    private noteService: NoteService
+  ) { }
 
   ngOnInit() {
     this.formationService.getAll().subscribe(f => (this.formations = f));
@@ -75,56 +76,120 @@ export class Releve implements OnInit, AfterViewInit {
     this.rows = [];
     this.cdRef.detectChanges();
   }
-
   loadReleve() {
     if (!this.selectedFormation || !this.selectedAnnee || !this.selectedSemestre) return;
 
-    this.inscriptionService.getByFormationAndSemestre(this.selectedFormation, +this.selectedSemestre).subscribe({
-      next: inscriptions => {
-        const rowsPromises = inscriptions.map(insc =>
+    this.inscriptionService.getByFormationAndSemestre(this.selectedFormation, +this.selectedSemestre)
+      .subscribe({
+        next: inscriptions => {
+          // 🔥 Optimisation : Fetch toutes les notes UNE SEULE FOIS
           this.noteService.getAll().toPromise().then(allNotes => {
-            const notes = (allNotes ?? []).filter(n => n.inscriptionId === insc.id);
+            const rowsPromises = inscriptions.map(insc => {
+              const notes = (allNotes ?? []).filter(n => n.inscriptionId === insc.id);
 
-            const notesValues = notes.map(n => n.noteSessionNormale ?? 0);
-            const moyenne = notesValues.length
-              ? +(notesValues.reduce((a, b) => a + b, 0) / notesValues.length).toFixed(2)
-              : 0;
+              // 🔥 Correction NaN : Convertir en nombre avec fallback
+              const notesValues = notes.map(n => {
+                const noteValue = n.noteSessionNormale ?? 0;
+                return typeof noteValue === 'number' ? noteValue : Number(noteValue) ?? 0;
+              }).filter(v => !isNaN(v)); // Optionnel : Filtrer les NaN restants
 
-            const mention = this.getMention(moyenne);
-            const decision = moyenne >= 10 ? 'Validé' : 'Non Validé';
+              const moyenne = notesValues.length
+                ? +(notesValues.reduce((a, b) => a + b, 0) / notesValues.length).toFixed(2)
+                : 0;
 
-            return {
-              etudiantNom: `Étudiant #${insc.etudiant_id}`,
-              matricule: `MATR-${insc.etudiant_id}`,
-              moyenneGenerale: moyenne,
-              rang: 0,
-              etudiantId: insc.etudiant_id,
-              inscriptionId: insc.id,
-              mention,
-              decision
-            };
-          })
-        );
+              const mention = this.getMention(moyenne);
+              const decision = moyenne >= 10 ? 'Validé' : 'Non Validé';
 
-        Promise.all(rowsPromises).then(rows => {
-          rows.sort((a, b) => b.moyenneGenerale - a.moyenneGenerale);
-          rows.forEach((r, i) => (r.rang = i + 1));
+              // Utiliser les vraies données de l'étudiant (comme avant)
+              const etudiant = insc.etudiant;
+              const etudiantNom = etudiant ? `${etudiant.prenom} ${etudiant.nom}` : `Étudiant #${insc.etudiant_id}`;
+              const matricule = etudiant?.matricule || `MATR-${insc.etudiant_id}`;
 
-          this.rows = rows;
-          this.tempRows = [...rows];
-          this.cdRef.detectChanges();
-        });
-      },
-      error: err => {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'error',
-          title: 'Erreur chargement relevé: ' + err
-        });
-      }
-    });
+              return {
+                etudiantNom,
+                matricule,
+                moyenneGenerale: moyenne,
+                rang: 0,
+                etudiantId: insc.etudiant_id,
+                inscriptionId: insc.id,
+                mention,
+                decision
+              };
+            });
+
+            Promise.all(rowsPromises).then(rows => {
+              rows.sort((a, b) => b.moyenneGenerale - a.moyenneGenerale);
+              rows.forEach((r, i) => (r.rang = i + 1));
+
+              this.rows = rows;
+              this.tempRows = [...rows];
+              this.cdRef.detectChanges();
+            });
+          }).catch(err => {
+            console.error('Erreur notes :', err);
+            // Gérer l'erreur ici si besoin, ou laisser remonter
+          });
+        },
+        error: err => {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Erreur chargement relevé: ' + err
+          });
+        }
+      });
   }
+
+  //   if (!this.selectedFormation || !this.selectedAnnee || !this.selectedSemestre) return;
+
+  //   this.inscriptionService.getByFormationAndSemestre(this.selectedFormation, +this.selectedSemestre)
+  //   .subscribe({
+  //     next: inscriptions => {
+  //       const rowsPromises = inscriptions.map(insc =>
+  //         this.noteService.getAll().toPromise().then(allNotes => {
+  //           const notes = (allNotes ?? []).filter(n => n.inscriptionId === insc.id);
+
+  //           const notesValues = notes.map(n => n.noteSessionNormale ?? 0);
+  //           const moyenne = notesValues.length
+  //             ? +(notesValues.reduce((a, b) => a + b, 0) / notesValues.length).toFixed(2)
+  //             : 0;
+
+  //           const mention = this.getMention(moyenne);
+  //           const decision = moyenne >= 10 ? 'Validé' : 'Non Validé';
+
+  //           return {
+  //             etudiantNom: `Étudiant #${insc.etudiant_id}`,
+  //             matricule: `MATR-${insc.etudiant_id}`,
+  //             moyenneGenerale: moyenne,
+  //             rang: 0,
+  //             etudiantId: insc.etudiant_id,
+  //             inscriptionId: insc.id,
+  //             mention,
+  //             decision
+  //           };
+  //         })
+  //       );
+
+  //       Promise.all(rowsPromises).then(rows => {
+  //         rows.sort((a, b) => b.moyenneGenerale - a.moyenneGenerale);
+  //         rows.forEach((r, i) => (r.rang = i + 1));
+
+  //         this.rows = rows;
+  //         this.tempRows = [...rows];
+  //         this.cdRef.detectChanges();
+  //       });
+  //     },
+  //     error: err => {
+  //       Swal.fire({
+  //         toast: true,
+  //         position: 'top-end',
+  //         icon: 'error',
+  //         title: 'Erreur chargement relevé: ' + err
+  //       });
+  //     }
+  //   });
+  // }
 
 
   // Même getMention que dans Bulletin

@@ -12,7 +12,7 @@ export class UtilisateurService {
   private baseUrl = `${environment.apiUrl}/utilisateurs`;
   private rolesUrl = `${environment.apiUrl}/roles`;
  
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {} 
 
   getAll(): Observable<Utilisateur[]> {
     return this.http.get<Utilisateur[]>(this.baseUrl);
@@ -22,10 +22,21 @@ export class UtilisateurService {
     return this.http.get<Utilisateur>(`${this.baseUrl}/${id}`);
   }
 
-  create(utilisateur: Utilisateur): Observable<Utilisateur> {
-    const payload = { ...utilisateur, createdAt: new Date(), updatedAt: new Date(), deletedAt: null };
-    return this.http.post<Utilisateur>(this.baseUrl, payload);
-  }
+ create(utilisateur: Utilisateur): Observable<Utilisateur> {
+  const payload = {
+    matricule: utilisateur.matricule,
+    nom: utilisateur.nom,
+    prenom: utilisateur.prenom,
+    email: utilisateur.email,
+    telephone: utilisateur.telephone,
+    role_id: utilisateur.role_id ?? utilisateur.role?.id, // ✅ fonctionne maintenant
+  };
+
+  console.log('Payload envoyé :', payload);
+  return this.http.post<Utilisateur>(this.baseUrl, payload);
+}
+
+
 
   update(id: number, utilisateur: Utilisateur): Observable<Utilisateur> {
     const payload = { ...utilisateur, updatedAt: new Date() };
@@ -38,5 +49,9 @@ export class UtilisateurService {
 
   getRoles(): Observable<Role[]> {
     return this.http.get<Role[]>(this.rolesUrl);
+  }
+
+  getRolesId():Observable<Role[]> {
+    return this.http.get<Role[]>(`${this.rolesUrl}/id`);
   }
 }

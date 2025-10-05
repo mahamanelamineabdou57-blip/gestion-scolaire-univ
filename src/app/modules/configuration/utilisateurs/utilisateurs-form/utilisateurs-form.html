@@ -107,9 +107,9 @@
               <div class="form-floating my-3">
                 <select
                   class="form-select"
-                  id="role"
+                  id="role_id"
                   [(ngModel)]="utilisateur.role"
-                  name="role"
+                  name="role_id"
                   [disabled]="readOnly"
                 >
                   <option *ngFor="let r of roles" [ngValue]="r.id">{{ r.nom }}</option>

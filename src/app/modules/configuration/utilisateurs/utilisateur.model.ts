@@ -8,6 +8,7 @@ export interface Utilisateur {
   email?: string; 
   telephone?: string;
   role: Role;
+  role_id?: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
