@@ -27,7 +27,7 @@ export class UtilisateursForm implements OnInit {
     prenom: '',
     email: '',
     telephone: '',
-    role_id:2,
+    role_id: undefined,
     role: { id: 2, nom: 'Utilisateur', description: '' }
   };
   roles: Role[] = [];
