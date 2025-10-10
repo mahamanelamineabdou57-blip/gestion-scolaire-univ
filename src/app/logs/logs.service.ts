@@ -19,4 +19,4 @@ export class LogsService {
   addLog(log: Logs): Observable<Logs> {
     return this.http.post<Logs>(this.apiUrl, log);
   }
-}
+} 

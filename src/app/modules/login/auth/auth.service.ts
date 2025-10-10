@@ -18,20 +18,20 @@ export class AuthService {
 
   constructor(private http: HttpClient, private logsService: LogsService, private router: Router) { }
 
-  login(matricule: string, password: string) {
-    localStorage.setItem('token', 'token');
-    this.user.set(1);
-  }
-
-  // login(matricule: string, password: string): Observable<any> {
-  //   return this.http.post<{ token: string, user: any }>(`${this.baseUrl}/login`, { matricule, password })
-  //     .pipe(
-  //       tap(res => {
-  //         localStorage.setItem('token', res.token);
-  //         this.user.set(res.user);
-  //       })
-  //     );
+  // login(matricule: string, password: string) {
+  //   localStorage.setItem('token', 'token');
+  //   this.user.set(22);
   // }
+
+  login(matricule: string, password: string): Observable<any> {
+    return this.http.post<{ token: string, user: any }>(`${this.baseUrl}/login`, { matricule, password })
+      .pipe(
+        tap(res => {
+          localStorage.setItem('token', res.token);
+          this.user.set(res.user);
+        })
+      );
+  }
 
   logout(): void {
     localStorage.removeItem('token');
@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   logAction(niveau: 'INFO' | 'WARN' | 'ERROR' | string, message: string) {
-    const log: Logs = { utilisateur: "", niveau, message };
+    const log: Logs = { utilisateur: this.user() ? this.user().nom + ' - ' +this.user().prenom : '', niveau, message };
     this.logsService.addLog(log).subscribe({
       error: err => {
         Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'lors de l\'enregistrement du log. ' + err, showConfirmButton: false, timer: 3000, timerProgressBar: true });

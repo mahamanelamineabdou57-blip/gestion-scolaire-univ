@@ -25,49 +25,49 @@ export class FaculteForm implements OnInit {
   isEditMode = false;
   logoPreview?: string;
 
-      access: Acces[] = [];
-    user: any = null;
-      interfaces: Interface[] = [];
+  access: Acces[] = [];
+  user: any = null;
+  interfaces: Interface[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private service: FaculteService,
-        private utilisateurService: UtilisateurService,
-        private securiteAccessService: SecuriteAccessService,
+    private utilisateurService: UtilisateurService,
+    private securiteAccessService: SecuriteAccessService,
     private cdRef: ChangeDetectorRef,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
-              try {
-                this.utilisateurService.getById(this.authService.user()).subscribe({
-                  next: (utilisateur) => {
-                    this.user = utilisateur;
-                    this.securiteAccessService.getInterfaces().subscribe(data => {
-                      this.interfaces = data;
-                      this.cdRef.detectChanges();
-                    });
-                    this.securiteAccessService.getAccesByUtilisateur(this.user.id).subscribe(perms => {
-                      this.access = perms;
-                      this.cdRef.detectChanges();
-                    });
-                  },
-                  error: (err) => {
-                    Swal.fire({toast: true,position: 'top-end',icon: 'error',title: 'Erreur lors du chargement des informations: ' + (err.message || err), showConfirmButton: false,timer: 3000,timerProgressBar: true});
-                    this.authService.logAction('ERROR',`Erreur lors du chargement des informations: ${err.message || err}`);
-                    this.user = null;
-                  }
-                });
-              } catch (err) {
-                Swal.fire({toast: true,position: 'top-end',icon: 'error',title: 'Erreur lors du chargement des informations: ' + (err), showConfirmButton: false,timer: 3000,timerProgressBar: true});
-                this.authService.logAction('ERROR',`Erreur lors du chargement des informations: ${err}`);
-                this.user = null;
-              }
+    try {
+      this.utilisateurService.getById(this.authService.user().id).subscribe({
+        next: (utilisateur) => {
+          this.user = utilisateur;
+          this.securiteAccessService.getInterfaces().subscribe(data => {
+            this.interfaces = data;
+            this.cdRef.detectChanges();
+          });
+          this.securiteAccessService.getAccesByUtilisateur(this.user.id).subscribe(perms => {
+            this.access = perms;
+            this.cdRef.detectChanges();
+          });
+        },
+        error: (err) => {
+          Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Erreur lors du chargement des informations: ' + (err.message || err), showConfirmButton: false, timer: 3000, timerProgressBar: true });
+          this.authService.logAction('ERROR', `Erreur lors du chargement des informations: ${err.message || err}`);
+          this.user = null;
+        }
+      });
+    } catch (err) {
+      Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Erreur lors du chargement des informations: ' + (err), showConfirmButton: false, timer: 3000, timerProgressBar: true });
+      this.authService.logAction('ERROR', `Erreur lors du chargement des informations: ${err}`);
+      this.user = null;
+    }
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
       this.readOnly = true;
-      this.service.getById(+id).subscribe(f => { if(f) this.faculte = { ...f }; });
+      this.service.getById(+id).subscribe(f => { if (f) this.faculte = { ...f }; });
     }
   }
 
@@ -78,16 +78,18 @@ export class FaculteForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        Swal.fire({toast: true,position: 'top-end',icon: 'success',title:  this.isEditMode
-                  ? `Modification faculté ${this.faculte.nom}`
-                  : `Création faculté ${this.faculte.nom}`,showConfirmButton: false,  timer: 3000,timerProgressBar: true});
+        Swal.fire({
+          toast: true, position: 'top-end', icon: 'success', title: this.isEditMode
+            ? `Modification faculté ${this.faculte.nom}`
+            : `Création faculté ${this.faculte.nom}`, showConfirmButton: false, timer: 3000, timerProgressBar: true
+        });
         this.authService.logAction('INFO', this.isEditMode
-                  ? `Modification faculté ${this.faculte.nom}`
-                  : `Création faculté ${this.faculte.nom}`);
+          ? `Modification faculté ${this.faculte.nom}`
+          : `Création faculté ${this.faculte.nom}`);
         this.router.navigate(['/facultes/faculte']);
       },
       error: err => {
-        Swal.fire({toast: true,position: 'top-end',icon: 'error',title:  `Erreur lors de l'enregistrement faculté: ${err.message || err}`,showConfirmButton: false,  timer: 5000,timerProgressBar: true});
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: `Erreur lors de l'enregistrement faculté: ${err.message || err}`, showConfirmButton: false, timer: 3000, timerProgressBar: true });
         this.authService.logAction('ERROR', `Erreur lors de l'enregistrement faculté : ${err.message || err}`);
       }
     });

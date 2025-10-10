@@ -45,7 +45,7 @@ export class FaculteList implements OnInit {
 
   ngOnInit() {
     try {
-      this.utilisateurService.getById(this.authService.user()).subscribe({
+      this.utilisateurService.getById(this.authService.user().id).subscribe({
         next: (utilisateur) => {
           this.user = utilisateur;
           this.securiteAccessService.getInterfaces().subscribe(data => {

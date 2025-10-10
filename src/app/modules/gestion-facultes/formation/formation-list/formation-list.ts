@@ -43,38 +43,38 @@ export class FormationList implements OnInit {
     private cdRef: ChangeDetectorRef,
     private authService: AuthService,
     private departementService: DepartementService,
-                            private utilisateurService: UtilisateurService,
-                            private securiteAccessService: SecuriteAccessService,
+    private utilisateurService: UtilisateurService,
+    private securiteAccessService: SecuriteAccessService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
-                  try {
-                    this.utilisateurService.getById(this.authService.user()).subscribe({
-                      next: (utilisateur) => {
-                        this.user = utilisateur;
-                        this.securiteAccessService.getInterfaces().subscribe(data => {
-                          this.interfaces = data;
-                          this.cdRef.detectChanges();
-                        });
-                        this.securiteAccessService.getAccesByUtilisateur(this.user.id).subscribe(perms => {
-                          this.access = perms;
-                          this.cdRef.detectChanges();
-                        });
-                      },
-                      error: (err) => {
-                        Swal.fire({toast: true,position: 'top-end',icon: 'error',title: 'Erreur lors du chargement des informations: ' + (err.message || err), showConfirmButton: false,timer: 3000,timerProgressBar: true});
-                        this.authService.logAction('ERROR',`Erreur lors du chargement des informations: ${err.message || err}`);
-                        this.user = null;
-                      }
-                    });
-                  } catch (err) {
-                    Swal.fire({toast: true,position: 'top-end',icon: 'error',title: 'Erreur lors du chargement des informations: ' + (err), showConfirmButton: false,timer: 3000,timerProgressBar: true});
-                    this.authService.logAction('ERROR',`Erreur lors du chargement des informations: ${err}`);
-                    this.user = null;
-                  }
+    try {
+      this.utilisateurService.getById(this.authService.user().id).subscribe({
+        next: (utilisateur) => {
+          this.user = utilisateur;
+          this.securiteAccessService.getInterfaces().subscribe(data => {
+            this.interfaces = data;
+            this.cdRef.detectChanges();
+          });
+          this.securiteAccessService.getAccesByUtilisateur(this.user.id).subscribe(perms => {
+            this.access = perms;
+            this.cdRef.detectChanges();
+          });
+        },
+        error: (err) => {
+          Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Erreur lors du chargement des informations: ' + (err.message || err), showConfirmButton: false, timer: 3000, timerProgressBar: true });
+          this.authService.logAction('ERROR', `Erreur lors du chargement des informations: ${err.message || err}`);
+          this.user = null;
+        }
+      });
+    } catch (err) {
+      Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Erreur lors du chargement des informations: ' + (err), showConfirmButton: false, timer: 3000, timerProgressBar: true });
+      this.authService.logAction('ERROR', `Erreur lors du chargement des informations: ${err}`);
+      this.user = null;
+    }
     this.departementService.getAll().subscribe({
-      next:deps => {
+      next: deps => {
         this.departements = deps;
         this.service.getAll().subscribe({
           next: data => {
@@ -87,13 +87,13 @@ export class FormationList implements OnInit {
             if (this.datatable) this.datatable.recalculate();
           },
           error: err => {
-            Swal.fire({toast: true,position: 'top-end',icon: 'error',title: 'chargement des formations. '+ err,showConfirmButton: false,  timer: 3000,timerProgressBar: true});
+            Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'chargement des formations. ' + err, showConfirmButton: false, timer: 3000, timerProgressBar: true });
             this.authService.logAction('ERROR', `Erreur de chargement des formations: ${err.message || err}`);
           }
         });
       },
       error: err => {
-        Swal.fire({toast: true,position: 'top-end',icon: 'error',title: 'chargement des departements. '+ err,showConfirmButton: false,  timer: 3000,timerProgressBar: true});
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'chargement des departements. ' + err, showConfirmButton: false, timer: 3000, timerProgressBar: true });
         this.authService.logAction('ERROR', `Erreur de chargement des departements: ${err.message || err}`);
       }
     });
@@ -104,7 +104,8 @@ export class FormationList implements OnInit {
       { name: 'Conditions d\'acces', prop: 'conditions' },
       { name: 'Durée (années)', prop: 'duree' },
       { name: 'Département', prop: 'departementNom' },
-      { name: 'Actions',
+      {
+        name: 'Actions',
         cellTemplate: this.actionsTemplate,
         sortable: false,
         canAutoResize: false,
@@ -146,7 +147,7 @@ export class FormationList implements OnInit {
           this.tempRows = this.tempRows.filter(r => r.id !== row.id);
           this.cdRef.detectChanges();
           if (this.datatable) this.datatable.recalculate();
-          Swal.fire({toast: true, position: 'top-end', icon: 'success', title: `Formation ${row.nom} supprimée`, showConfirmButton: false, timer: 3000});
+          Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: `Formation ${row.nom} supprimée`, showConfirmButton: false, timer: 3000 });
           this.authService.logAction('INFO', `Formation ${row.nom} supprimée`);
         });
       }
@@ -160,8 +161,8 @@ export class FormationList implements OnInit {
       Département: r.departementNom
     })));
     saveAs(new Blob([csv], { type: 'text/csv;charset=utf-8' }), 'formations.csv');
-        Swal.fire({toast: true,position: 'top-end',icon: 'success',title: 'Export PDF des formations. ',showConfirmButton: false,  timer: 3000,timerProgressBar: true});
-        this.authService.logAction('INFO', 'Export PDF des formations');
+    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Export PDF des formations. ', showConfirmButton: false, timer: 3000, timerProgressBar: true });
+    this.authService.logAction('INFO', 'Export PDF des formations');
 
   }
 
@@ -181,8 +182,8 @@ export class FormationList implements OnInit {
       margin: { top: 20 }
     });
     doc.save('formations.pdf');
-        Swal.fire({toast: true,position: 'top-end',icon: 'success',title: 'Export PDF des formations. ',showConfirmButton: false,  timer: 3000,timerProgressBar: true});
-        this.authService.logAction('INFO', 'Export PDF des formations');
+    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Export PDF des formations. ', showConfirmButton: false, timer: 3000, timerProgressBar: true });
+    this.authService.logAction('INFO', 'Export PDF des formations');
 
   }
   normalizeString(value: string): string {

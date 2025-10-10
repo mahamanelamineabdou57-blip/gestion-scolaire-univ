@@ -45,22 +45,22 @@ export class Sidebar implements OnInit {
       }
     });
 
-    this.universiteService.get().subscribe({
-      next: (universite) => {
-        this.logoPreview = universite.logo ? `${environment.apiUrl}/uploads/${universite.logo}` : null;
-        this.universiteService.notifyLogoUpdate(universite.logo);
-        this.cdRef.detectChanges();
-      },
-      error: (err) => {
-        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Erreur lors du chargement des informations de l\'université : ' + err, showConfirmButton: false, timer: 3000, timerProgressBar: true });
-        this.authService.logAction('ERROR', `Erreur de chargement des informations: ${err.message || err}`);
-      }
-    });
+    // this.universiteService.get().subscribe({
+    //   next: (universite) => {
+    //     this.logoPreview = universite.logo ? `${environment.apiUrl}/uploads/${universite.logo}` : null;
+    //     this.universiteService.notifyLogoUpdate(universite.logo);
+    //     this.cdRef.detectChanges();
+    //   },
+    //   error: (err) => {
+    //     Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Erreur lors du chargement des informations de l\'université : ' + err, showConfirmButton: false, timer: 3000, timerProgressBar: true });
+    //     this.authService.logAction('ERROR', `Erreur de chargement des informations: ${err.message || err}`);
+    //   }
+    // });
   }
 
   ngOnInit() {
     try {
-      this.utilisateurService.getById(this.authService.user()).subscribe({
+      this.utilisateurService.getById(this.authService.user().id).subscribe({
         next: (utilisateur) => {
           this.user = utilisateur;
           this.securiteAccessService.getInterfaces().subscribe(data => {

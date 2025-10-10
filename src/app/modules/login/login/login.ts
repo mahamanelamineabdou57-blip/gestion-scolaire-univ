@@ -26,32 +26,32 @@ export class Login {
     });
   }
 
-  submit(): void {
-    if (this.loginForm.valid) {
-      const { matricule, password } = this.loginForm.value;
-      this.authService.login(matricule, password);
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.loginForm.markAllAsTouched();
-    }
-  }
+  // submit(): void {
+  //   if (this.loginForm.valid) {
+  //     const { matricule, password } = this.loginForm.value;
+  //     this.authService.login(matricule, password);
+  //     this.router.navigate(['/dashboard']);
+  //   } else {
+  //     this.loginForm.markAllAsTouched();
+  //   }
+  // }
 
   logout(): void {
     localStorage.removeItem('token');
     this.authService.user.set(null);
     this.router.navigate(['/login']);
   }
-  // submit(): void {
-  //   if (this.loginForm.valid) {
-  //     const { matricule, password } = this.loginForm.value;
-  //     this.authService.login(matricule, password).subscribe({
-  //       next: () => this.router.navigate(['/dashboard']),
-  //       error: (err) => {
-  //         this.errorMessage = err?.error?.message || 'Erreur de connexion';
-  //       }
-  //     });
-  //   } else {
-  //     this.loginForm.markAllAsTouched();
-  //   }
-  // }
+  submit(): void {
+    if (this.loginForm.valid) {
+      const { matricule, password } = this.loginForm.value;
+      this.authService.login(matricule, password).subscribe({
+        next: () => this.router.navigate(['/dashboard']),
+        error: (err) => {
+          this.errorMessage = err?.error?.message || 'Erreur de connexion';
+        }
+      });
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
+  }
 }

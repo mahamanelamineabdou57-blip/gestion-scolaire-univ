@@ -34,9 +34,10 @@ export class Header {
   }
 
   ngOnInit() {
-this.authService.user.set(1);
+// this.authService.user.set(1);
+console.log(this.authService.user().id);
       try {
-        this.utilisateurService.getById(this.authService.user()).subscribe({
+        this.utilisateurService.getById(this.authService.user().id).subscribe({
           next: (utilisateur) => {
           console.log("ok ")
             this.user = utilisateur;

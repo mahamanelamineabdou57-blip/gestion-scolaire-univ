@@ -1,9 +1,11 @@
 <main id="main" class="main">
   <div class="pagetitle">
-    <h1>{{ isEditMode ? 'Modifier une faculté' : 'Nouvelle faculté' }}</h1>
+    <h1>{{ isEditMode ? "Modifier une faculté" : "Nouvelle faculté" }}</h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a [routerLink]="['/facultes/faculte']">Facultés</a></li>
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/facultes/faculte']">Facultés</a>
+        </li>
         <li class="breadcrumb-item active">{{ getLink() }}</li>
       </ol>
     </nav>
@@ -13,69 +15,101 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
-
           <!-- Header -->
-          <div class="card-header uas-bg-color d-flex justify-content-between align-items-center">
+          <div
+            class="card-header uas-bg-color d-flex justify-content-between align-items-center"
+          >
             <div>
               <h3 class="m-0">
                 Informations de la faculté
-                <span *ngIf="isEditMode" class="badge ms-2" [ngClass]="getBadgeClasse()">
+                <span
+                  *ngIf="isEditMode"
+                  class="badge ms-2"
+                  [ngClass]="getBadgeClasse()"
+                >
                   {{ getBadgeTexte() }}
                 </span>
               </h3>
             </div>
-            <div *ngIf="hasInterface('Faculte','ecriture')" class="form-check form-switch">
-            <div *ngIf="isEditMode" class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" id="editSwitch"
-                     (change)="toggleReadOnly()" [checked]="!readOnly" />
-              <label class="form-check-label ms-2" for="editSwitch">Activer la modification</label>
-            </div>
+            <div
+              *ngIf="hasInterface('Faculte', 'ecriture')"
+              class="form-check form-switch"
+            >
+              <div *ngIf="isEditMode" class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="editSwitch"
+                  (change)="toggleReadOnly()"
+                  [checked]="!readOnly"
+                />
+                <label class="form-check-label ms-2" for="editSwitch"
+                  >Activer la modification</label
+                >
+              </div>
             </div>
           </div>
 
           <!-- Body -->
           <div class="card-body">
             <form #form="ngForm" (ngSubmit)="onSubmit()">
-                  <div class="col-sm-12 mt-3">
-                    <!-- Nom -->
-                    <div class="form-floating my-3">
-                      <input type="text"
-                             class="form-control"
-                             id="nom"
-                             [(ngModel)]="faculte.nom"
-                             name="nom"
-                             required
-                             [disabled]="readOnly"
-                             placeholder="Nom de la faculté" />
-                      <label for="nom">Nom de la faculté</label>
-                    </div>
-                  </div>
+              <div class="col-sm-12 mt-3">
+                <!-- Nom -->
+                <div class="form-floating my-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nom"
+                    [(ngModel)]="faculte.nom"
+                    name="nom"
+                    required
+                    [disabled]="readOnly"
+                    placeholder="Nom de la faculté"
+                  />
+                  <label for="nom">Nom de la faculté</label>
+                </div>
+              </div>
 
-                <!-- Logo -->
-                  <div class="mt-3">
-                    <label>Choisissez le logo</label>
-                    <input class="form-control"
-                           type="file"
-                           (change)="onFileChange($event)"
-                           [disabled]="readOnly" />
-                    <div *ngIf="logoPreview" class="mt-2 text-center">
-                      <img [src]="logoPreview" alt="Logo faculté" class="img-fluid rounded" style="max-height: 120px;" />
-                    </div>
-                  </div>
+              <!-- Logo -->
+              <div class="mt-3">
+                <label>Choisissez le logo</label>
+                <input
+                  class="form-control"
+                  type="file"
+                  (change)="onFileChange($event)"
+                  [disabled]="readOnly"
+                />
+                <div *ngIf="logoPreview" class="mt-2 text-center">
+                  <img
+                    [src]="logoPreview"
+                    alt="Logo faculté"
+                    class="img-fluid rounded"
+                    style="max-height: 120px"
+                  />
+                </div>
+              </div>
 
               <!-- Actions -->
               <div class="row m-3">
-                <button *ngIf="hasInterface('Faculte','ecriture')" type="submit" class="btn uas-btn-color-alt col me-2" [disabled]="readOnly">
-                  <i class="bi bi-save mx-2"></i> {{ isEditMode ? 'Modifier' : 'Enregistrer' }}
+                <button
+                  *ngIf="hasInterface('Faculte', 'ecriture')"
+                  type="submit"
+                  class="btn uas-btn-color-alt col me-2"
+                  [disabled]="readOnly"
+                >
+                  <i class="bi bi-save mx-2"></i>
+                  {{ isEditMode ? "Modifier" : "Enregistrer" }}
                 </button>
-                <button type="button" class="btn uas-btn-color col" (click)="cancel()">
+                <button
+                  type="button"
+                  class="btn uas-btn-color col"
+                  (click)="cancel()"
+                >
                   <i class="bi bi-arrow-left-circle mx-2"></i> Retour
                 </button>
               </div>
-
             </form>
           </div>
-
         </div>
       </div>
     </div>
